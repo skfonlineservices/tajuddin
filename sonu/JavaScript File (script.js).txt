@@ -1,0 +1,74 @@
+function toggleSignUpForm() {
+    var passwordAttempt = prompt("Enter the lock code to proceed:");
+    if (passwordAttempt === "041219900625") {
+        var signUpForm = document.getElementById("signup-form");
+        signUpForm.style.display = (signUpForm.style.display === "none") ? "block" : "none";
+    } else {
+        alert("Incorrect lock code! You are not authorized to proceed.");
+    }
+}
+
+function signUp() {
+    var name = document.getElementById("name").value;
+    var surname = document.getElementById("surname").value;
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+    var website = document.getElementById("website").value;
+    var country = document.getElementById("country").value;
+    var profileImage = document.getElementById("profile-image").value;
+    
+    var userData = {
+        name: name,
+        surname: surname,
+        email: email,
+        password: password,
+        website: website,
+        country: country,
+        profileImage: profileImage
+    };
+    localStorage.setItem(email, JSON.stringify(userData));
+    alert("Sign up successful!");
+
+    // Automatically add dofollow backlink
+    var backlinkElement = document.createElement("a");
+    backlinkElement.href = website;
+    backlinkElement.textContent = "Visit User's Website";
+    backlinkElement.rel = "dofollow";
+    backlinkElement.target = "_blank";
+    document.getElementById("user-profile").appendChild(backlinkElement);
+
+    document.getElementById("nav-links").removeChild(document.getElementById("signup-link"));
+    document.getElementById("nav-links").removeChild(document.getElementById("signin-link"));
+    document.getElementById("nav-links").appendChild(document.getElementById("logout"));
+    return false; // Prevent form submission
+}
+
+function signIn() {
+    var email = prompt("Enter your email:");
+    var password = prompt("Enter your password:");
+    var userData = JSON.parse(localStorage.getItem(email));
+    if (userData && userData.password === password) {
+        // Sign in successful, display user profile
+        document.getElementById("user-profile").style.display = "block";
+        document.getElementById("signup-form").style.display = "none";
+        document.getElementById("logout").style.display = "block"; // Show logout button
+        var profileInfo = document.getElementById("profile-info");
+        profileInfo.innerHTML = "<p>Name: " + userData.name + "</p>" +
+                                "<p>Surname: " + userData.surname + "</p>" +
+                                "<p>Email: " + userData.email + "</p>" +
+                                "<p>Website: <a href='" + userData.website + "' target='_blank'>" + userData.website + "</a></p>" +
+                                "<p>Country: " + userData.country + "</p>" +
+                                "<p>Profile Image: <img src='" + userData.profileImage + "' alt='Profile Image'></p>";
+    } else {
+        alert("Invalid email or password!");
+    }
+}
+
+function logout() {
+    // Clear user profile and show sign-up form
+    document.getElementById("user-profile").style.display = "none";
+    document.getElementById("signup-form").style.display = "block";
+    document.getElementById("logout").style.display = "none"; // Hide logout button
+    document.getElementById("nav-links").appendChild(document.getElementById("signup-link"));
+    document.getElementById("nav-links").appendChild(document.getElementById("signin-link"));
+}
